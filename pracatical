@@ -1,0 +1,43 @@
+resource "aws_instance" "web" {
+    ami = "ami-0947d2ba12ee1ff75"
+    instance_type = "t2.micro"
+    tags = {
+        Name = "Java_App"
+        Environment = "Dev"
+    }
+}
+
+resource "aws_key_pair" "tayo" {
+  key_name   = "terraform-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDsOXo0euYDVkCw4hYqz7Y0eFvnoSBoA8IRtlgmil2epxiB572XwO8pDW5L2+/5n2ZwaHn+l1rGuFeiZLFTUJg2759AWfkMG3mQRz2vDQ9UNLj1rm3Zi0SY3KEZADmSrZo45DsweR7Jii8+shSwfBNsOPlniMcKfSkGRCRCRhv0QDUY/vyWcl5bURwQDdlmV6fF5LjIlu24egHGwVZhScyvh5+40y6CoOo10xDgQt9tsv4mmF21qggx/xrEtn4Cl40uX2T5q9LM2u+Al56ZppxcfhYtkJJ5C/YVIvjz2+UwIDN2gRAyEP4LePYwdaHsVZDG8BwJc757DH13ajBmx8vEDNu76eqxW6z9Ida+PhtBGlN/FD6e0mbR5nXXuz1Vi9DzfqEGREYP2PkxVX/5Fz9NB1h8Vu5/vHmxc4wLfHypLaEiQMqJ2BUc2KHwBT3nu4t4A7UfXw+3vNH5wQ9noTNfZcZ7i+ZmH5Ek4An6bUJWFgwaG+B8KqmcIdiNp/Ob0Ok= tayo@Olaitans-MBP.lan"
+}
+
+resource "aws_s3_bucket" "tayobuc2" {
+  bucket = "my-tf-test-bucket"
+  acl    = "private"
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
+
+resource "aws_s3_bucket" "tayobuc5" {
+  bucket = "s3-website-test4"
+  acl    = "public-read"
+
+  website {
+    index_document = "index.html"
+    error_document = "error.html"
+
+    routing_rules = <<EOF
+[{
+    "Condition": {
+        "KeyPrefixEquals": "docs/"
+    },
+    "Redirect": {
+        "ReplaceKeyPrefixWith": "documents/"
+    }
+}]
+EOF
+  }
+}
